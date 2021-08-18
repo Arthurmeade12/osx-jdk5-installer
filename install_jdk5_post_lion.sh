@@ -71,7 +71,6 @@ osx_commercial_name=$(get_osx_name ${darwin_version%.[0-9].[0-9]})
 test ${darwin_version/1[2-9]./} != $darwin_version && is_mountain_lion=true
 
 
-
 # colors and style
 RESET=`tput sgr0`
 RED=`tput setaf 1`
@@ -83,10 +82,8 @@ UNDERLINED=`tput smul`
 BOLD=`tput bold`
 
 
-
 # escape aware echo
 echo() { builtin echo -e $@; }  
-
 
 
 # Make sure only root can run the script
@@ -94,7 +91,6 @@ if [ $EUID -ne 0 ]; then
    echo $RED'This script must be run as root in order to install the JDK! If unsure why check the script.'$RESET 1>&2
    exit 1
 fi
-
 
 
 
@@ -146,12 +142,10 @@ read answer
 echo
 
 
-
 echo
 echo $UNDERLINED'Here we go...'$RESET
 # ===================================
 echo
-
 if [ ! -f $javapkg.dmg ]; then
     echo 'The "Java for Mac OS X 10.5 Update 10" DMG ('"$javapkg.dmg"') was not found locally.'
     echo 'Now trying to download the DMG file from Apple website (http://support.apple.com/kb/DL1359).'
@@ -171,9 +165,6 @@ else
 fi
 
 
-
-
-
 # Extracting the DMG content in temporary location
 echo
 echo 'Extracting Java for Mac OS X package'
@@ -188,15 +179,12 @@ hdiutil detach -quiet -force /tmp/jdk5dmg/
 rm -rf /tmp/jdk5dmg/
 
 
-
-
 # Prepare the System JVM path
 if [ ! -e $jvms_path ]; then
     echo 'Create '$jvms_path', as it does not exist on your system (it might be because 
 you don'"'"' t have another Java install).'
     mkdir -v -p $jvms_path
 fi
-
 echo
 echo 'Removing previous Java 1.5 file / directory or symbolic links in :'
 cd $jvms_path
@@ -210,13 +198,10 @@ rm 1.5.0/ > /dev/null 2>&1 || rm -rf 1.5.0 > /dev/null 2>&1
 rm -rf $jvmver 2>&1
 
 
-
-
 echo
 echo $UNDERLINED'Preparing JavaVM framework'$RESET
 # ================================================
 echo
-
 echo 'Extracting JDK 1.5.0 from package payload in :'
 cd $java_frmwk_path
 pwd
@@ -226,13 +211,11 @@ gzip -cd /tmp/jdk5pkg/$javapkg.pkg/Payload | pax -r -s \
 ls -Fld 1.5*
 
 rm -rf /tmp/jdk5pkg/
-
 echo
 echo 'Recreating symbolic links to ./'"$jvmver"' for 1.5 and 1.5.0 :'
 pwd
 ln -svhF ./$jvmver 1.5
 ln -svhF ./$jvmver 1.5.0
-
 echo
 echo 'Changing values in config files to make JDK work with '$osx_commercial_name
 cd $jvmver
@@ -240,13 +223,10 @@ cd $jvmver
 /usr/libexec/PlistBuddy -c "Delete :JavaVM:JVMMaximumSystemVersion" ./Resources/Info.plist
 /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string libjava.jnilib" ./Resources/Info.plist
 ln -siv ./Resources/Info.plist .
-
 echo
 echo 'Linking Apple native wrapper'
 mkdir ./MacOS
 ln -siv ../Libraries/libjava.jnilib ./MacOS
-
-
 
 
 echo
@@ -270,12 +250,11 @@ when the Java 5 JVM is run in 32 bit mode. For this reason this script removes 3
 fi
 
 
-
-
 echo
 echo $UNDERLINED'Almost over...'$RESET
 # ====================================
 echo
+
 
 # opening Java Preferences
 if [ -n "$java_prefs" ]; then
@@ -326,7 +305,7 @@ echo
 
 printf "%s" 'Yeah I got it ! (Press Enter) '
 read -s -n 0 key_press
-echo
+
 
 echo
 echo
@@ -359,7 +338,6 @@ echo 'And just use it this way :'
 echo $GREEN'\tswitch_jdk 1.5'$RESET
 echo $GREEN'\tswitch_jdk 1.7.0_45'$RESET
 echo $GREEN'\tswitch_jdk 1.7.0_51'$RESET
-
 
 
 echo
